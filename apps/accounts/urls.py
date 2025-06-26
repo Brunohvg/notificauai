@@ -18,7 +18,12 @@ urlpatterns = [
     path('register/', register_view, name='register'),             # /accounts/register/
 
     path('password-reset/', password_reset_request_view, name='password-reset'),  # /accounts/password-reset/
-    path('password-reset-confirm/<str:uid>/<str:token>/', password_reset_confirm_view, name='password-reset-confirm'),  # /accounts/password-reset-confirm/{uid}/{token}/
+    path(
+    'password-reset-confirm/<str:uidb64>/<str:token>/',
+    password_reset_confirm_view,
+    name='password-reset-confirm'
+)
+    #path('password-reset-confirm/<str:uid>/<str:token>/', password_reset_confirm_view, name='password-reset-confirm'),  # /accounts/password-reset-confirm/{uid}/{token}/
 
     # Descomente essas abaixo se tiver implementado:
     # path('<int:id>/', account_detail_view, name='detail'),       # /accounts/{id}/

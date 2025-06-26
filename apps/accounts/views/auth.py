@@ -51,7 +51,8 @@ def password_reset_request_view(request):
     form = PasswordResetRequestForm(request.POST or None)
     if form.is_valid():
         if send_password_recovery_email(form.cleaned_data['email'], request):
-            return render(request, 'accounts/email_enviado.html')
+            
+            return render(request, 'accounts/email_sent.html')
         form.add_error('email', 'Email não cadastrado.')
     return render(request, 'accounts/password_reset.html', {'form': form})
 

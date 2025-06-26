@@ -20,11 +20,10 @@ def send_password_reset_email(user, request):
 
     # Monta o link completo de redefinição de senha
     reset_link = request.build_absolute_uri(
-        reverse('accounts:resetar_senha', args=[uid, token])
+        reverse('accounts:password-reset-confirm', args=[uid, token])
     )
-
     # Renderiza o HTML do email
-    html_content = render_to_string('accounts/redefinir_senha_email.html', {
+    html_content = render_to_string('emails/password_reset_email.html', {
         'reset_url': reset_link,
         'client_name': user.first_name,
         'year': 2025,
