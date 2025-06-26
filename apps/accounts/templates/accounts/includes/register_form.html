@@ -1,0 +1,124 @@
+<style>
+  /* Estilo para o formulário de cadastro */
+  .register-form {
+    width: 379px;  /* Mesma largura do formulário de login */
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  /* Para garantir responsividade em telas menores */
+  @media (max-width: 420px) {
+    .register-form {
+      width: 100%;
+      padding: 0 15px;
+    }
+  }
+
+  /* Estilo para mensagens de erro do Django */
+  .error-feedback {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+  }
+
+  /* Modificar estilo input com erro */
+  .form-control.is-invalid {
+    border-color: #dc3545;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  }
+</style>
+  
+<div class="register-form">
+  <form method="POST" class="p-4 rounded-4 bg-white">
+    {% csrf_token %}
+    
+    <h5 class="fw-bold text-primary mb-4">Crie sua Conta</h5>
+
+    <div class="form-floating mb-3">
+      {{ form.first_name }}
+      <label for="{{ form.first_name.id_for_label }}">Nome</label>
+      {% if form.first_name.errors %}
+        <div class="error-feedback">
+          {{ form.first_name.errors.0 }}
+        </div>
+        <script>
+          document.getElementById('{{ form.first_name.id_for_label }}').classList.add('is-invalid');
+        </script>
+      {% endif %}
+    </div>
+
+    <div class="form-floating mb-3">
+      {{ form.email }}
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {% if form.email.errors %}
+        <div class="error-feedback">
+          {{ form.email.errors.0 }}
+        </div>
+        <script>
+          document.getElementById('{{ form.email.id_for_label }}').classList.add('is-invalid');
+        </script>
+      {% endif %}
+    </div>
+
+    <div class="form-floating mb-3">
+      {{ form.phone }}
+      <label for="{{ form.phone.id_for_label }}">Telefone</label>
+      {% if form.phone.errors %}
+        <div class="error-feedback">
+          {{ form.phone.errors.0 }}
+        </div>
+        <script>
+          document.getElementById('{{ form.phone.id_for_label }}').classList.add('is-invalid');
+        </script>
+      {% endif %}
+    </div>
+
+    <div class="form-floating mb-3">
+      {{ form.password1 }}
+      <label for="{{ form.password1.id_for_label }}">Senha</label>
+      {% if form.password1.errors %}
+        <div class="error-feedback">
+          {{ form.password1.errors.0 }}
+        </div>
+        <script>
+          document.getElementById('{{ form.password1.id_for_label }}').classList.add('is-invalid');
+        </script>
+      {% endif %}
+    </div>
+
+    <div class="form-floating mb-4">
+      {{ form.password2 }}
+      <label for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
+      {% if form.password2.errors %}
+        <div class="error-feedback">
+          {{ form.password2.errors.0 }}
+        </div>
+        <script>
+          document.getElementById('{{ form.password2.id_for_label }}').classList.add('is-invalid');
+        </script>
+      {% endif %}
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger mb-3">
+        {% for error in form.non_field_errors %}
+          <p class="mb-0">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary w-100 fs-5 mb-4 rounded-3">
+      Cadastrar
+    </button>
+
+    <div class="d-flex align-items-center justify-content-center mt-3">
+      <p class="mb-0">Já tem uma conta?</p>
+      <a class="text-primary fw-bold ms-2" href="{% url 'accounts:login' %}">Entrar</a>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,36 @@
+<form method="POST" class="needs-validation p-4 rounded-4 bg-white" novalidate>
+  {% csrf_token %}
+  
+  <h5 class="fw-bold text-primary mb-4">Acesse sua Conta</h5>
+
+  <div class="form-floating mb-3">
+    {{ form.email }}
+    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+    <small class="text-danger">{{ form.email.errors }}</small>
+  </div>
+  
+  <div class="form-floating mb-4">
+    {{ form.senha }}
+    <label for="{{ form.senha.id_for_label }}" class="form-label">Senha</label>
+    <small class="text-danger">{{ form.senha.errors }}</small>
+  </div>
+  
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+      <label class="form-check-label text-dark" for="flexCheckChecked">
+        Lembrar deste dispositivo
+      </label>
+    </div>
+    <a class="text-primary fw-bold" href="{% url 'accounts:password-reset' %}">Esqueceu a senha?</a>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100 fs-5 mb-4 rounded-3">
+    Entrar
+  </button>
+
+  <div class="d-flex align-items-center justify-content-center mt-3">
+    <p class="mb-0">Novo por aqui?</p>
+    <a class="text-primary fw-bold ms-2" href="{% url 'accounts:register' %}">Criar uma conta</a>
+  </div>
+</form>
