@@ -7,7 +7,7 @@ def redirect_with_message(
     url_name: str,
     request: HttpRequest,
     msg: str,
-    level: Literal['success', 'error', 'info', 'warning'] = 'success') -> HttpResponseRedirect:
+    level: Literal['success', 'error', 'info', 'warning'] = 'success', extra_tags=None) -> HttpResponseRedirect:
     """
     Redireciona com uma mensagem do Django messages.
 
@@ -20,5 +20,5 @@ def redirect_with_message(
     Returns:
         HttpResponseRedirect
     """
-    add_message(request, msg, level)
+    add_message(request, msg, level, extra_tags)
     return redirect(url_name)

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import login as auth_login, logout as auth_logout, get_user_model
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
@@ -13,7 +13,7 @@ from ..services import (
     login_user,
     register_user,
     send_password_recovery_email,
-    reset_user_password,
+    
 )
 from common.utils.messages import add_message
 from common.utils.redirects import redirect_with_message
@@ -61,19 +61,27 @@ def password_reset_request_view(request):
 # View que o usuário acessa ao clicar no link do email de redefinição.
 # Permite definir uma nova senha.
 # -----------------------------------------------------------------------------
+
 def password_reset_confirm_view(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
     except (User.DoesNotExist, ValueError, TypeError, OverflowError):
-        return redirect_with_message('accounts:login', request, "Link inválido ou expirado.", level='error', extra_tags='danger')
+        user = None
 
-    if not default_token_generator.check_token(user, token):
-        return redirect_with_message('accounts:login', request, "Link inválido ou expirado.", level='error', extra_tags='danger')
+    if user is None or not default_token_generator.check_token(user, token):
+        return redirect_with_message('accounts:login', request, "Link de redefinição de senha inválido ou expirado.", level='error', extra_tags='danger')
 
-    form = SetNewPasswordForm(request.POST or None)
-    if form.is_valid():
-        reset_user_password(user, form.cleaned_data['new_password'])
-        return redirect_with_message('accounts:login', request, "Senha redefinida com sucesso.", level='success')
+    if request.method == 'POST':
+        # Instanciamos o SEU formulário, que agora é mais inteligente
+        form = SetNewPasswordForm(user, request.POST)
+        if form.is_valid():
+            # AQUI ESTÁ A CORREÇÃO:
+            # Chamamos o método .save() que ele herdou do SetPasswordForm.
+            # Isso corrige o KeyError e salva a senha corretamente.
+            form.save()
+            return redirect_with_message('accounts:login', request, "Sua senha foi redefinida com sucesso.", level='success')
+    else:
+        form = SetNewPasswordForm(user)
 
     return render(request, 'accounts/password_reset_confirm.html', {'form': form})
