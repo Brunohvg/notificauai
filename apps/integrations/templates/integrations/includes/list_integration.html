@@ -1,0 +1,700 @@
+<div class="integrations-container">
+
+  <!-- Integrações Ativas -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <h4 class="fw-bold text-dark mb-4">
+        <i class="ti ti-plug-connected me-2 text-primary"></i>
+        Integrações Ativas
+        
+      </h4>
+    </div>
+
+    {% for integration in integrations %}
+    integration.get_integration_type_display
+      {% if integration.integration_type == 'NUVEMSHOP' and integration.is_active %}
+        <div class="col-md-6 mb-4">
+          <div class="card border-0 integration-card active-integration h-100">
+            <div class="card-body p-4">
+              <div class="ribbon ribbon-top-right"><span>Ativo</span></div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                  <div class="integration-icon me-3">
+                    <div class="icon-wrapper bg-primary text-white">
+                      <i class="ti ti-shopping-cart fs-4"></i>
+                    </div>
+                    <div class="pulse-ring"></div>
+                  </div>
+                  <div>
+                    <h5 class="mb-0 fw-semibold">{{ integration.config_data.store_name }}</h5>
+                    <p class="text-muted mb-0 small">{{ integration.get_integration_type_display }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="integration-details mb-4">
+                <div class="detail-item d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small">ID da conta</span>
+                  <div class="d-flex align-items-center">
+                    <span class="api-key fw-medium">{{ integration.credentials.store_id|default:"—" }}</span>
+                    <button class="btn btn-sm btn-icon p-0 ms-2 hover-scale" data-bs-toggle="tooltip" title="Copiar">
+                      <i class="ti ti-clipboard text-primary"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="detail-item d-flex justify-content-between align-items-center">
+                  <span class="text-muted small">Última sincronização</span>
+                  <span class="sync-time d-flex align-items-center">
+                    <i class="ti ti-clock text-primary me-1 small"></i>
+                    <span>
+                      {% if integration.updated_at %}
+                        {{ integration.updated_at|timesince }} atrás
+                      {% else %}
+                        Nunca
+                      {% endif %}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="#" class="btn btn-primary btn-sm d-flex align-items-center">
+                  <i class="ti ti-refresh me-2"></i> Sincronizar
+                </a>
+       
+                <a href="#" class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                   data-bs-toggle="modal" data-bs-target="#configModal-{{ integration.id }}">
+                  <i class="ti ti-settings me-1"></i> Configurações
+                </a>
+              </div>
+              <div class="integration-status-indicator"></div>
+            </div>
+          </div>
+        </div>
+        {% include 'integrations/partials/nuvemshop_modal.html' %}
+      {% elif integration.integration_type == 'WHATSAPP' and integration.is_active %}
+        <div class="col-md-6 mb-4">
+          <div class="card border-0 integration-card active-integration h-100">
+            <div class="card-body p-4">
+              <div class="ribbon ribbon-top-right"><span>Ativo</span></div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                  <div class="integration-icon me-3">
+                    <div class="icon-wrapper bg-success text-white">
+                      <i class="ti ti-brand-whatsapp fs-4"></i>
+                    </div>
+                    <div class="pulse-ring success"></div>
+                  </div>
+                  <div>
+                    <h5 class="mb-0 fw-semibold">Evolution API</h5>
+                    <p class="text-muted mb-0 small">Integração WhatsApp</p>
+                  </div>
+                </div>
+              </div>
+              <div class="integration-details mb-4">
+                <div class="detail-item d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small">ID da Instância</span>
+                  <div class="d-flex align-items-center">
+                    <span class="api-key fw-medium">{{ integration.credentials.instance_id}}</span>
+                    <button class="btn btn-sm btn-icon p-0 ms-2 hover-scale" data-bs-toggle="tooltip" title="Copiar">
+                      <i class="ti ti-clipboard text-primary"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="detail-item d-flex justify-content-between align-items-center">
+                  <span class="text-muted small">Status</span>
+                  <span class="status-badge connected">
+                    <i class="ti ti-circle-filled me-1"></i>{{ integration.connection_status|default:"Desconectado" }}
+                  </span>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm d-flex align-items-center"
+                data-bs-toggle="modal"
+                data-bs-target="#whatsappQrModal-{{ integration.id }}">
+          <i class="ti ti-qrcode me-2"></i> Gerar QR Code
+        </button>
+        <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#whatsappConfigModal2-{{ integration.id }}">
+          <i class="ti ti-settings me-1"></i> Configurações
+        </button>
+              </div>
+              <div class="integration-status-indicator success"></div>
+            </div>
+          </div>
+        </div>
+        
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Integrações Disponíveis -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h4 class="fw-bold text-dark mb-4">
+        <i class="ti ti-apps me-2 text-primary"></i>
+        Integrações Disponíveis
+      </h4>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <!-- Nuvemshop -->
+    <div class="col-lg-4 col-md-6 mb-4" data-integration="NUVEMSHOP">
+      <div class="card border-0 available-integration h-100 hover-lift">
+        <div class="card-body text-center p-4">
+          <div class="integration-platform-icon nuvemshop mb-4">
+            <div class="icon-background"></div>
+            <i class="ti ti-shopping-cart icon-big"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Nuvemshop</h5>
+          <p class="text-muted mb-4">Integre sua loja Nuvemshop para gerenciar produtos, pedidos e estoque em um só lugar</p>
+          <a href="https://www.tiendanube.com/apps/14464/authorize?state=csrf-code"
+             class="btn btn-connect w-100 text-decoration-none">
+            <span>Conectar</span>
+            
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- WhatsApp API -->
+  
+    <div class="col-lg-4 col-md-6 mb-4" data-integration="WHATSAPP">
+      <div class="card border-0 available-integration h-100 hover-lift">
+        <div class="card-body text-center p-4">
+          <div class="integration-platform-icon whatsapp mb-4">
+            <div class="icon-background"></div>
+            <i class="ti ti-brand-whatsapp icon-big"></i>
+          </div>
+          <h5 class="fw-bold mb-3">WhatsApp API</h5>
+          <p class="text-muted mb-4">Conecte-se ao WhatsApp para gerenciar atendimento ao cliente e enviar mensagens</p>
+          <button class="btn btn-connect w-100" data-bs-toggle="modal" data-bs-target="#whatsappConfigModal" >
+            <span>Conectar</span>
+            
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+   
+    <!-- Mercado Livre -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card border-0 available-integration h-100 hover-lift">
+        <div class="card-body text-center p-4">
+          <div class="integration-platform-icon mercado-livre mb-4">
+            <div class="icon-background"></div>
+            <i class="ti ti-shopping icon-big"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Mercado Livre</h5>
+          <p class="text-muted mb-4">Integre sua loja do Mercado Livre para gerenciar vendas e estoque em um só lugar</p>
+          <button class="btn btn-connect w-100" disabled>
+            <span>Conectar</span>
+            
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shopify -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card border-0 available-integration h-100 hover-lift">
+        <div class="card-body text-center p-4">
+          <div class="integration-platform-icon shopify mb-4">
+            <div class="icon-background"></div>
+            <i class="ti ti-shopping-cart icon-big"></i>
+          </div>
+          <h5 class="fw-bold mb-3">Shopify</h5>
+          <p class="text-muted mb-4">Conecte sua loja Shopify para sincronizar produtos, pedidos e clientes automaticamente</p>
+          <button class="btn btn-connect w-100" disabled>
+            <span>Conectar</span>
+            
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WooCommerce -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card border-0 available-integration h-100 hover-lift">
+        <div class="card-body text-center p-4">
+          <div class="integration-platform-icon woocommerce mb-4">
+            <div class="icon-background"></div>
+            <i class="ti ti-brand-wordpress icon-big"></i>
+          </div>
+          <h5 class="fw-bold mb-3">WooCommerce</h5>
+          <p class="text-muted mb-4">Integre sua loja WooCommerce e centralize toda a gestão do seu e-commerce</p>
+          <button class="btn btn-connect w-100" disabled>
+            <span>Conectar</span>
+            
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- fim row mb-4 -->
+
+  {# Inclua todos os modais fora das rows de cards #}
+  {% include 'integrations/partials/nuvemshop_modal.html' %}
+
+  {% include 'integrations/partials/modal_connect_whatsapp.html' %}
+  {% include 'integrations/partials/modal_show_qr_whatsapp.html' %}
+  {% include 'integrations/partials/modal_configure_whatsapp.html' %}
+</div>
+
+<script>
+  window.activeIntegrations = [
+    {% for integration in integrations %}
+      {% if integration.is_active %}
+        "{{ integration.integration_type|escapejs }}",
+      {% endif %}
+    {% endfor %}
+  ];
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Obter as integrações ativas a partir da variável global `window.activeIntegrations`
+    const activeIntegrations = (window.activeIntegrations || []).map(i => i.toUpperCase());
+
+    // Selecionar todos os elementos com a classe `available-integration`
+    document.querySelectorAll('.available-integration').forEach(card => {
+      const wrapper = card.closest('[data-integration]');
+      
+      // Verificar se o wrapper existe e possui o atributo 'data-integration'
+      if (wrapper) {
+        const type = wrapper.getAttribute('data-integration').toUpperCase();
+
+        // Se a integração já está ativa, ocultar o card
+        if (activeIntegrations.includes(type)) {
+          wrapper.style.display = 'none';
+        }
+      }
+    });
+  });
+</script>
+
+    <style>
+      .whatsapp-modal .modal-content {
+        border-radius: 16px;
+        background-color: #fff;
+        border: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      }
+    
+      .whatsapp-modal .modal-header {
+        border-bottom: none;
+        padding: 1.5rem 2rem;
+        background-color: #f8f9fa;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+      }
+    
+      .whatsapp-modal .modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+      }
+    
+      .whatsapp-modal .modal-body {
+        padding: 2rem;
+        background-color: #ffffff;
+      }
+    
+      .whatsapp-modal .nav-tabs .nav-link {
+        border: none;
+        font-weight: 600;
+        color: #555;
+      }
+    
+      .whatsapp-modal .nav-tabs .nav-link.active {
+        background-color: #e9ecef;
+        border-radius: 0.5rem;
+        color: #0d6efd;
+      }
+    
+      .whatsapp-modal .form-label {
+        font-weight: 500;
+        color: #444;
+      }
+    
+      .whatsapp-modal .form-control,
+      .whatsapp-modal textarea.form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+      }
+    
+      .whatsapp-modal .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: none;
+        background-color: #f8f9fa;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
+    
+      .whatsapp-modal .btn-primary {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+      }
+    
+      .whatsapp-modal .btn-secondary {
+        border-radius: 8px;
+        font-weight: 500;
+      }
+    
+      .whatsapp-modal .alert {
+        border-radius: 10px;
+      }
+    
+      @media (max-width: 576px) {
+        .whatsapp-modal .modal-body {
+          padding: 1rem;
+        }
+        .whatsapp-modal .modal-header,
+        .whatsapp-modal .modal-footer {
+          padding: 1rem;
+        }
+      }
+    </style>
+  <!-- CSS Adicional -->
+  <style>
+    /* Container principal */
+    .integrations-container {
+      padding: 10px 5px;
+    }
+  
+    /* Cards de integração */
+    .integration-card {
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .integration-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+    
+    .active-integration {
+      border-left: 4px solid var(--bs-primary);
+    }
+    
+    .active-integration.success {
+      border-left-color: var(--bs-success);
+    }
+    
+    /* Ribbon */
+    .ribbon {
+      position: absolute;
+      z-index: 1;
+      overflow: hidden;
+      width: 120px;
+      height: 120px;
+    }
+    
+    .ribbon-top-right {
+      top: -10px;
+      right: -10px;
+    }
+    
+    .ribbon-top-right::before,
+    .ribbon-top-right::after {
+      border-top-color: transparent;
+      border-right-color: transparent;
+      content: '';
+      display: block;
+      position: absolute;
+      border: 5px solid transparent;
+    }
+    
+    .ribbon-top-right::before {
+      top: 0;
+      left: 0;
+    }
+    
+    .ribbon-top-right::after {
+      bottom: 0;
+      right: 0;
+    }
+    
+    .ribbon-top-right span {
+      position: absolute;
+      top: 30px;
+      right: -25px;
+      transform: rotate(45deg);
+      width: 120px;
+      background-color: rgba(var(--bs-success-rgb), 0.9);
+      padding: 5px 0;
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Ícones de integração */
+    .integration-icon {
+      position: relative;
+    }
+    
+    .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .pulse-ring {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--bs-primary);
+      top: 0;
+      right: 0;
+    }
+    
+    .pulse-ring::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(var(--bs-primary-rgb), 0.7);
+      animation: pulse 2s infinite;
+    }
+    
+    .pulse-ring.success {
+      background-color: var(--bs-success);
+    }
+    
+    .pulse-ring.success::after {
+      background-color: rgba(var(--bs-success-rgb), 0.7);
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
+    }
+    
+    /* Detalhes da integração */
+    .integration-details {
+      background-color: rgba(0,0,0,0.02);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .detail-item {
+      padding: 4px 0;
+    }
+    
+    .api-key {
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+    
+    /* Status indicator */
+    .integration-status-indicator {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--bs-primary) 0%, rgba(var(--bs-primary-rgb), 0.3) 100%);
+    }
+    
+    .integration-status-indicator.success {
+      background: linear-gradient(90deg, var(--bs-success) 0%, rgba(var(--bs-success-rgb), 0.3) 100%);
+    }
+    
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .status-badge.connected {
+      color: var(--bs-success);
+    }
+    
+    .status-badge i {
+      font-size: 0.7rem;
+    }
+    
+    /* Hover scale effect */
+    .hover-scale {
+      transition: transform 0.2s ease;
+    }
+    
+    .hover-scale:hover {
+      transform: scale(1.15);
+    }
+    
+    /* Integrações disponíveis */
+    .available-integration {
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+      background-color: #f8f9fa;
+    }
+    
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+    
+    /* Ícones das plataformas */
+    .integration-platform-icon {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .integration-platform-icon .icon-background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      transform: rotate(45deg);
+    }
+    
+    .integration-platform-icon i {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Cores específicas por plataforma */
+    .mercado-livre .icon-background {
+      background-color: rgba(255, 193, 7, 0.15);
+    }
+    
+    .mercado-livre i {
+      color: #ff9800;
+    }
+    
+    .shopify .icon-background {
+      background-color: rgba(40, 167, 69, 0.15);
+    }
+    
+    .shopify i {
+      color: #28a745;
+    }
+    
+    .woocommerce .icon-background {
+      background-color: rgba(102, 16, 242, 0.15);
+    }
+    
+    .woocommerce i {
+      color: #6610f2;
+    }
+    
+
+    /* Nuvemshop Styles */
+    .nuvemshop .icon-background {
+      background-color: rgba(255, 193, 7, 0.15); /* Adjust color as needed */
+    }
+
+    .nuvemshop i {
+      color: #ff9800; /* Adjust color as needed */
+    }
+
+    /* WhatsApp Styles */
+    .whatsapp .icon-background {
+      background-color: rgba(40, 167, 69, 0.15); /* Light green background */
+    }
+
+    .whatsapp i {
+      color: #28a745; /* Dark green color */
+    }
+
+    /* Botão de conectar */
+    .btn-connect {
+      background: linear-gradient(45deg, var(--bs-primary), rgba(var(--bs-primary-rgb), 0.8));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-connect:hover {
+      background: linear-gradient(45deg, var(--bs-primary), var(--bs-primary));
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.25);
+      color: white;
+    }
+    
+    .btn-connect i {
+      transition: transform 0.3s ease;
+    }
+    
+    .btn-connect:hover i {
+      transform: translateX(5px);
+    }
+  
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .integration-details {
+        padding: 12px;
+      }
+      
+      .icon-wrapper {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    /* Ajustes nos botões de dropdown */
+    .dropdown-toggle::after {
+      display: none; /* Remove a seta padrão para usar apenas o ícone */
+    }
+    
+    /* Garante que o dropdown apareça por cima de outros elementos */
+    .dropdown-menu {
+      z-index: 1030;
+    }
+  </style>
+  
+  <!-- Inicializações dos componentes Bootstrap -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicialização dos tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+      
+      // Inicialização dos dropdowns
+      // Verificando se o Bootstrap está disponível
+      if (typeof bootstrap !== 'undefined') {
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+        dropdownElementList.forEach(function (dropdownToggleEl) {
+          new bootstrap.Dropdown(dropdownToggleEl);
+        });
+      } else {
+        console.error('Bootstrap não foi carregado. Verifique se o arquivo JS está incluído corretamente.');
+      }
+    });
+  </script>

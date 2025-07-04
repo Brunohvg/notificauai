@@ -1,0 +1,29 @@
+<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+  
+  {% if status == 'open' %}
+    <div class="text-center d-flex flex-column align-items-center justify-content-center"
+        style="padding: 1.5rem; border-radius: 1rem; background-color: #e6f4ea; color: #2e7d32; font-weight: bold; box-shadow: 0 0 10px rgba(0,0,0,0.05); max-width: 280px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#2e7d32" class="mb-2" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM7 10.5l4-4-.7-.7L7 9.1 5.7 7.8l-.7.7L7 10.5z"/>
+      </svg>
+      Conectado com sucesso!
+    </div>
+  {% elif qr_code %}
+    <img src="{{ qr_code }}"
+         alt="QR Code do WhatsApp"
+         style="display: block; max-width: 200px; max-height: 200px; object-fit: contain; margin: auto;">
+
+  {% elif status == 'connecting' %}
+    <p class="text-muted text-center m-0">Gerando QR Code... <br>Tipo obra pública, mas mais rápido.</p>
+
+  {% elif status == 'no_integration' or status == 'no_workspace' %}
+    <div class="alert alert-danger text-center w-100 m-0">
+      Erro ao carregar integração
+    </div>
+
+  {% else %}
+    <p class="text-muted text-center m-0">QR Code não disponível.</p>
+
+  {% endif %}
+
+</div>

@@ -1,0 +1,25 @@
+{% if status == 'connecting' and pairing_code %}
+  <div class="d-flex mb-2">
+    <input type="text"
+           id="pairingInput"
+           value="{{ pairing_code }}"
+           class="form-control form-control-lg text-center fw-bold"
+           readonly>
+  </div>
+{% elif status == 'connecting' and not pairing_code %}
+  <div class="d-flex mb-2 text-muted">
+    <p class="mb-0">Gerando código de pareamento...</p>
+  </div>
+{% elif status == 'connected' %}
+  <div class="d-flex mb-2 text-success">
+    <p class="mb-0">Já conectado</p>
+  </div>
+{% elif status == 'no_integration' or status == 'no_workspace' %}
+  <div class="d-flex mb-2 text-danger">
+    <p class="mb-0">Erro ao carregar integração</p>
+  </div>
+{% else %}
+  <div class="d-flex mb-2 text-muted">
+    <p class="mb-0">Código não disponível</p>
+  </div>
+{% endif %}

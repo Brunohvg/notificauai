@@ -19,7 +19,7 @@ class WorkspaceMiddleware:
         request.workspace = None
         user = getattr(request, 'user', None)
         
-        if user and user.is_authenticated and not user.is_superuser:
+        if user and user.is_authenticated: # and not user.is_superuser
             try:
                 request.workspace = get_user_workspace(user)
             except WorkspaceNotFound:

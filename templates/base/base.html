@@ -1,0 +1,308 @@
+  <!DOCTYPE html>
+  {% load static %}
+  <html lang="pt-br">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>CloudStore</title>
+      <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.png' %}" />
+      <link rel="stylesheet" href="{% static 'assets/css/styles.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'assets/css/css_personalizado.css' %}">
+      <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.0.5/datatables.min.css" rel="stylesheet" />
+    
+    </head>
+
+    <body>
+      <!-- Body Wrapper -->
+      <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+
+        <aside class="left-sidebar">
+          <!-- Sidebar scroll -->
+          <div class="scroll-sidebar" data-simplebar="init">
+            <div class="simplebar-wrapper" style="margin: -20px;">
+              <div class="simplebar-height-auto-observer-wrapper">
+                <div class="simplebar-height-auto-observer"></div>
+              </div>
+              <div class="simplebar-mask">
+                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                  <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
+                    <div class="simplebar-content" style="padding: 20px;">
+                      <div class="d-flex mb-4 align-items-center justify-content-between">
+                        <a href="index.html" class="text-nowrap logo-img ms-0 ms-md-1"><img src="{% static 'assets/images/logos/dark-logo.svg' %}" width="180" alt="" /></a>
+                        <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                          <i class="ti ti-x fs-8"></i>
+                        </div>
+                      </div>
+                      <!-- Sidebar navigation -->
+                      <nav class="sidebar-nav">
+                        <ul id="sidebarnav" class="mb-4 pb-2 in">
+                          <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-5"></i>
+                            <span class="hide-menu">Home</span>
+                          </li>
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link primary-hover-bg" href="" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-primary rounded-3"><i class="ti ti-layout-dashboard fs-7 text-primary"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Dashboard</span>
+                            </a>
+                          </li>
+                          <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-5"></i>
+                            <span class="hide-menu">UI Componenst</span>
+                          </li>
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link warning-hover-bg" href="" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-warning rounded-3"><i class="ti ti-article fs-7 text-warning"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Pedidos</span>
+                            </a>
+                          </li>
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link danger-hover-bg" href="" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-danger rounded-3"><i class="ti ti-alert-circle fs-7 text-danger"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Clientes</span>
+                            </a>
+                          </li>
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link primary-hover-bg" href="'teste'" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-primary rounded-3"><i class="ti ti-file-description fs-7 text-primary"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Mensagens</span>
+                            </a>
+                          </li>
+                          <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-5"></i>
+                            <span class="hide-menu">Configurações</span>
+                          </li>
+
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link warning-hover-bg" href="" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-warning rounded-3"><i class="ti ti-login fs-7 text-warning"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Meu Perfil</span>
+                            </a>
+                          </li>
+                          <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link danger-hover-bg" href="{% url 'integrations_ui:integration' %}" aria-expanded="false">
+                              <span class="aside-icon p-2 bg-light-danger rounded-3"><i class="ti ti-user-plus fs-7 text-danger"></i></span>
+                              <span class="hide-menu ms-2 ps-1">Integrações</span>
+                            </a>
+                          </li>
+                        <div class="mt-5 blocks-card sidebar-ad">
+                          <div class="card bg-light-primary">
+                            <div class="card-body">
+                              <div class="text-center">
+                                <img src="{% static 'assets/images/backgrounds/education-blocks.png' %}" width="136" height="136" class="mt-n9" alt="" />
+
+                                <h5>Are you<br /> satisfied ?</h5>
+
+                                <div class="mt-4">
+                                  <a href="" target="_blank" class="btn btn-primary buynow-link w-100 px-2">Buy Now</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </nav>
+                      
+                      <!-- End Sidebar navigation -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="simplebar-placeholder" style="width: auto; height: 1603px;"></div>
+            </div>
+            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+              <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+            </div>
+            <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+              <div class="simplebar-scrollbar" style="height: 358px; transform: translate3d(0px, 400px, 0px); display: block;"></div>
+            </div>
+          </div>
+          <!-- End Sidebar scroll -->
+        </aside>
+        <!-- Sidebar End -->
+        <!-- Main wrapper -->
+        <div class="body-wrapper">
+          <!-- Header Start -->
+          <header class="app-header">
+            <nav class="navbar navbar-expand-lg navbar-light">
+              <ul class="navbar-nav">
+                <li class="nav-item d-block d-xl-none">
+                  <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)"><i class="ti ti-menu-2"></i></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                    <i class="ti ti-bell-ringing"></i>
+                    <div class="notification bg-primary rounded-circle"></div>
+                  </a>
+                </li>
+              </ul>
+              <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                  <div>
+                    {% if user.is_authenticated %}
+                      {{ request.user.email }}
+                    {% endif %}
+                  </div>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false"><img src="{% static 'assets/images/profile/user1.jpg' %}" alt="" width="35" height="35" class="rounded-circle" /></a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                      <div class="message-body">
+                        <a href="" class="d-flex align-items-center gap-2 dropdown-item">
+                          <i class="ti ti-user fs-6"></i>
+                          <p class="mb-0 fs-3">Meu Perfil</p>
+                        </a>
+                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                          <i class="ti ti-mail fs-6"></i>
+                          <p class="mb-0 fs-3">My Account</p>
+                        </a>
+                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                          <i class="ti ti-list-check fs-6"></i>
+                          <p class="mb-0 fs-3">My Task</p>
+                        </a>
+                        <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block shadow-none">Logout</a>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+            </nav>
+    
+          </header>
+          <!-- Header End -->
+          <!-- Bloco de Mensagens Django -->
+          {% if messages %}
+          <div id="msg-container"
+                class="position-fixed top-0 end-0 p-3"
+                style="z-index:1050; width:320px;">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible soft-alert position-relative mb-3"
+                      role="alert"
+                      id="alert-{{ forloop.counter }}"
+                      style="padding:12px 44px 2rem 12px;">
+                  
+                  <!-- Ícone + título -->
+                  <div class="d-flex align-items-center mb-1">
+                    {% if message.tags == 'success' %}
+                      <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                      <strong>Sucesso</strong>
+                    {% elif message.tags == 'info' %}
+                      <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                      <strong>Info</strong>
+                    {% elif message.tags == 'warning' %}
+                      <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                      <strong>Aviso</strong>
+                    {% elif message.tags == 'danger' %}
+                      <i class="bi bi-x-circle-fill me-2 fs-5"></i>
+                      <strong>Erro</strong>
+                    {% endif %}
+                  </div>
+                  
+                  <!-- Texto -->
+                  <div class="small">{{ message }}</div>
+                  
+                  <!-- Botão de fechar -->
+                  <button type="button"
+                          class="btn-close position-absolute top-0 end-0 mt-2 me-2"
+                          data-bs-dismiss="alert"
+                          aria-label="Fechar"></button>
+                  
+                  <!-- Barra de progresso -->
+                  <div class="progress position-absolute bottom-0 start-0 w-100"
+                        style="height:4px; border-radius:0 0 6px 6px; overflow:hidden;">
+                    <div class="progress-bar bg-{{ message.tags }}"
+                          role="progressbar"
+                          style="width:100%; animation: progressBar 5s linear forwards;">
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            
+            <style>
+              @keyframes progressBar {
+                from { width:100%; }
+                to   { width:0%; }
+              }
+            
+              .soft-alert {
+                background-color: #ffffff !important; /* fundo branco puro */
+                border-left: 3px solid transparent;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                transition: opacity .3s ease, transform .3s ease;
+              }
+              .soft-alert.fade {
+                opacity: 0 !important;
+                transform: translateX(20px) !important;
+              }
+            
+              /* fundos opacos por tipo */
+              .alert-success.soft-alert {
+                background-color: #d4edda !important; /* verde claro */
+                border-left-color: #198754;
+                color: #0f5132;
+              }
+              .alert-info.soft-alert {
+                background-color: #cff4fc !important; /* azul claro */
+                border-left-color: #0dcaf0;
+                color: #055160;
+              }
+              .alert-warning.soft-alert {
+                background-color: #fff3cd !important; /* amarelo claro */
+                border-left-color: #ffc107;
+                color: #664d03;
+              }
+              .alert-danger.soft-alert {
+                background-color: #f8d7da !important; /* vermelho claro */
+                border-left-color: #dc3545;
+                color: #842029;
+              }
+            
+              /* ícones coloridos */
+              .alert-success.soft-alert i { color: #198754; }
+              .alert-info.soft-alert    i { color: #0dcaf0; }
+              .alert-warning.soft-alert i { color: #ffc107; }
+              .alert-danger.soft-alert  i { color: #dc3545; }
+            
+              .btn-close:hover { opacity: 1 !important; }
+            </style>
+            
+            {% endif %}
+          
+        
+        
+        
+          {% block Dashboard %}
+            <div class="container-fluid">
+        
+                <div class="card-body">
+                  {% block TituloConteudoFluido %}
+              
+                  {% endblock %}
+                  {% block content %}
+                    <p class="mb-0">This is a sample page</p>
+                  {% endblock %}
+                </div>
+              
+            </div>
+          {% endblock %}
+        </div>
+      </div>
+      <script src="{% static 'assets/libs/jquery/dist/jquery.min.js' %}"></script>
+      <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+      <script src="{% static 'assets/js/sidebarmenu.js' %}"></script>
+      <script src="{% static 'assets/js/app.min.js' %}"></script>
+      <script src="{% static 'assets/libs/simplebar/dist/simplebar.js' %}"></script>
+
+      <!-- Header <script src="{% static 'assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>End -->
+      <!-- Header<script src="{% static 'assets/js/dashboard.js' %}"></script>End -->
+
+      <script src="{% static 'assets/libs/htmx/js/htmx.min.js' %}"></script>
+      <script src="{% static 'assets/js/personalizado.js' %}"></script>
+      
+      {% block scripts %}
+
+      {% endblock %}
+    </body>
+  </html>

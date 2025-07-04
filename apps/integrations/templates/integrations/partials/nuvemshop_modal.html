@@ -1,0 +1,170 @@
+    <!-- Modal -->
+    <div class="modal fade" id="configModal-{{ integration.id }}" tabindex="-1" aria-labelledby="configModalLabel-{{ integration.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold" id="configModalLabel-{{ integration.id }}">⚙️ Configurações da Integração - {{ integration.config_data.store_name }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <form method="POST" action="/sua-url-de-configuracao/">
+              {% csrf_token %}
+              <input type="hidden" name="integration_id" value="{{ integration.id }}">
+              <div class="modal-body px-4 pt-3">
+                <!-- Abas -->
+                <ul class="nav nav-tabs mb-4" id="configTabs-{{ integration.id }}" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="geral-tab-{{ integration.id }}" data-bs-toggle="tab" data-bs-target="#geral-{{ integration.id }}"
+                            type="button" role="tab">🔧 Geral</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sync-tab-{{ integration.id }}" data-bs-toggle="tab" data-bs-target="#sync-{{ integration.id }}"
+                            type="button" role="tab">🔄 Sincronização</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="logs-tab-{{ integration.id }}" data-bs-toggle="tab" data-bs-target="#logs-{{ integration.id }}"
+                            type="button" role="tab">📄 Logs</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="acoes-tab-{{ integration.id }}" data-bs-toggle="tab" data-bs-target="#acoes-{{ integration.id }}"
+                            type="button" role="tab">⚠️ Ações</button>
+                  </li>
+                </ul>
+      
+                <div class="tab-content" id="configTabsContent-{{ integration.id }}">
+                  <!-- Aba Geral -->
+                  <div class="tab-pane fade show active" id="geral-{{ integration.id }}" role="tabpanel">
+      
+                    <!-- Bloco com dados da loja -->
+                    <div class="border rounded-3 p-3 mb-4 bg-light">
+                      <h6 class="fw-bold mb-3">🏪 Loja vinculada</h6>
+                      <div class="row">
+                        <div class="col-md-6 mb-2">
+                          <div class="small text-muted">Nome</div>
+                          <div>{{ integration.nuvemshopintegration.store_name }}</div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <div class="small text-muted">CNPJ/CPF</div>
+                          <div>{{ integration.config_data.store_document }}</div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <div class="small text-muted">Telefone</div>
+                          <div>{{ integration.config_data.whatsapp_phone_number }}</div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <div class="small text-muted">Email de contato</div>
+                          <div>{{ integration.config_data.email  }}</div>
+                        </div>
+                        <div class="col-12">
+                          <div class="small text-muted">Domínio</div>
+                          <div>{{ integration.config_data.original_domain }}</div>
+                        </div>
+                        {% if integration.config_data.domains %}
+                          <div class="col-12 mt-2">
+                            <div class="small text-muted">Domínios vinculados</div>
+                            <ul class="mb-0 ps-3 small">
+                              {% for domain in integration.config_data.domains %}
+                                <li>{{ domain }}</li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="storeId-{{ integration.id }}" class="form-label fw-semibold">🆔 ID da Loja</label>
+                      <input type="text" class="form-control bg-light" id="storeId-{{ integration.id }}" name="store_id"
+                             value="{{ integration.nuvemshopintegration.store_id }}" readonly>
+                    </div>
+                    <div class="row">
+                    <div class="col mb-3">
+                      <label for="accessToken-{{ integration.id }}" class="form-label fw-semibold">🔐 Token de Acesso</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control bg-light" id="accessToken-{{ integration.id }}" name="access_token"
+                               value="{{ integration.nuvemshopintegration.access_token }}" readonly>
+                        <span class="input-group-text bg-white text-primary" title="Regerar Token">
+                          <i class="ti ti-refresh"></i>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="col mb-3">
+                      <label for="accessToken-{{ integration.id }}" class="form-label fw-semibold">🛜 Webhook Secreto</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control bg-light" id="accessToken-{{ integration.id }}" name="access_token"
+                               value="{{ integration.nuvemshopintegration.webhook_secret }}" readonly>
+                        <span class="input-group-text bg-white text-primary" title="Regerar Token">
+                          <i class="ti ti-refresh"></i>
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                  </div>
+      
+                  <!-- Aba Sincronização -->
+                  <div class="tab-pane fade" id="sync-{{ integration.id }}" role="tabpanel">
+                    <div class="mb-3">
+                      <label for="sync_frequency-{{ integration.id }}" class="form-label fw-semibold">🔁 Frequência de Sincronização</label>
+                      <select class="form-select" id="sync_frequency-{{ integration.id }}" name="sync_frequency">
+                        <option value="manual" selected>Somente manual</option>
+                        <option value="hourly">A cada hora</option>
+                        <option value="daily">Diariamente</option>
+                      </select>
+                    </div>
+      
+                    <div class="mb-3">
+                      <label for="environment-{{ integration.id }}" class="form-label fw-semibold">🌐 Ambiente</label>
+                      <select class="form-select" id="environment-{{ integration.id }}" name="environment">
+                        <option value="production" selected>Produção</option>
+                        <option value="sandbox">Homologação</option>
+                      </select>
+                    </div>
+                  </div>
+      
+                  <!-- Aba Logs -->
+                  <div class="tab-pane fade" id="logs-{{ integration.id }}" role="tabpanel">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">📄 Última sincronização</label>
+                      <p class="form-control-plaintext">
+                        {% if integration.updated_at %}
+                          {{ integration.updated_at|timesince }} atrás
+                        {% else %}
+                          Nunca sincronizado
+                        {% endif %}
+                      </p>
+                    </div>
+      
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">⚠️ Último Erro</label>
+                      <div class="alert alert-light border border-danger text-danger small mb-0" role="alert">
+                        {% if integration.last_error %}
+                          {{ integration.last_error }}
+                        {% else %}
+                          Nenhum erro registrado.
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+      
+                  <!-- Aba Ações -->
+                  <div class="tab-pane fade" id="acoes-{{ integration.id }}" role="tabpanel">
+                    <div class="alert alert-warning small">
+                      ⚠️ Tenha cuidado! As ações abaixo são irreversíveis.
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <button type="button" class="btn btn-outline-danger" onclick="confirmDesativar('{{ integration.id }}')">Desativar</button>
+                      <button type="button" class="btn btn-outline-dark" onclick="confirmExcluir('{{ integration.id }}')">Excluir Integração</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="modal-footer px-4 pb-4">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
