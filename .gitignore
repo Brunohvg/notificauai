@@ -12,3 +12,5 @@ wheels/
 db.sqlite3
 *logs/
 django-debug.log
+logs/django-debug.log
+logs/django-debug.log
