@@ -1,7 +1,7 @@
 # Em apps/integrations/urls.py
 from django.urls import path, include
 
-app_name = 'integrations'
+app_name = 'integrations_api'
 
 urlpatterns = [
     # Aponta DIRETAMENTE para o urls.py do módulo da Nuvemshop

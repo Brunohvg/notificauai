@@ -11,5 +11,5 @@ urlpatterns = [
     path('auth/callback/', views.nuvemshop_callback, name='callback'),
     
     # URL do webhook que a Nuvemshop usará para nos enviar eventos
-    path('webhook/', views.nuvemshop_webhook_receiver, name='webhook_receiver'),
+    path('webhook/<str:received_token>/', views.nuvemshop_webhook_receiver, name='webhook_receiver'),
 ]

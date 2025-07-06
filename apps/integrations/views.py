@@ -16,3 +16,14 @@ def integrations_view(request):
         'workspace': request.workspace,
     }
     return render(request, 'integrations/integrations.html', context)
+
+def integrations_delete(request, integration_id):
+    """
+    Exclui uma integração específica do workspace ATIVO do usuário logado.
+    """
+    try:
+        integration = Integration.objects.get(id=integration_id, workspace=request.workspace)
+        integration.delete()
+        return render(request, 'integrations/integrations.html', {'message': 'Integração excluída com sucesso.'})
+    except Integration.DoesNotExist:
+        return render(request, 'integrations/integrations.html', {'error': 'Integração não encontrada.'})

@@ -33,7 +33,7 @@ def login_view(request):
         if user:
             auth_login(request, user)
             logger.info(f"Login bem-sucedido para o usuário: {email}")
-            return redirect_with_message('accounts:perfil', request, "Logado com sucesso.", level='success')
+            return redirect_with_message('integrations_ui:integrations', request, "Logado com sucesso.", level='success')
 
         logger.warning(f"Tentativa de login inválida para o email: {email}")
         add_message(request, "Email ou senha incorretos.", level='error', extra_tags='danger')

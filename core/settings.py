@@ -14,6 +14,10 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool, default=False)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://notificai.lojabibelo.com.br",
+]
+
 
 # ====================================
 # APLICATIVOS INSTALADOS
@@ -138,6 +142,11 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='sua_senha')
 # ====================================
 # LOGGING
 # ====================================
+import os
+
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOG_DIR, exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -186,3 +195,4 @@ LOGGING = {
 # ====================================
 NUVEMSHOP_CLIENT_ID = config("CLIENT_ID")
 NUVEMSHOP_CLIENT_SECRET = config("CLIENT_SECRET")
+BASE_URL = config("WEBHOOK_URL")

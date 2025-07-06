@@ -14,3 +14,4 @@ db.sqlite3
 django-debug.log
 logs/django-debug.log
 logs/django-debug.log
+apps/integrations/ecommerce/nuvemshop/tests/teste.py
