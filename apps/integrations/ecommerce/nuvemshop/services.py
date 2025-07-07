@@ -50,6 +50,7 @@ def finalize_nuvemshop_integration(code: str, workspace) -> NuvemshopIntegration
 
         # Garante que o webhook está presente
         create_nuvemshop_webhook(integration, event_type="order/create")
+        print(get_store_info(integration))
         return integration
 
     # 3. Loja nova: cria com segurança
@@ -67,8 +68,8 @@ def finalize_nuvemshop_integration(code: str, workspace) -> NuvemshopIntegration
 
     # Cria o webhook DEPOIS de garantir que a integração foi salva
     create_nuvemshop_webhook(integration, event_type="order/create")
+    print(get_store_info(integration))
     return integration
-
 
 
 def create_nuvemshop_webhook(integration: NuvemshopIntegration, event_type: str) -> dict:
@@ -117,10 +118,44 @@ def create_nuvemshop_webhook(integration: NuvemshopIntegration, event_type: str)
     except Exception as e:
         raise NuvemshopAPIError(f"Erro ao criar webhook: {str(e)}")
 
+
+def get_store_info(integration: NuvemshopIntegration) -> dict:
+    """
+    Obtém informações da loja Nuvemshop.
+    """
+    client = NuvemshopClient(
+        store_id=integration.store_id,
+        access_token=integration.access_token
+    )
+    
+    try:
+        store_info = client.stores.list()
+        if not store_info:
+            raise NuvemshopAPIError("Não foi possível obter informações da loja.")  
+        # A Nuvemshop retorna uma lista, mas queremos o primeiro item
+        integration.store_name = store_info.get("name", "").get("pt", '')
+        integration.store_email = store_info.get("email", "")
+        integration.store_phone = store_info.get("phone", "")
+        integration.store_domain = store_info.get("original_domain", "")
+        integration.store_document = store_info.get("business_id", "")     
+        integration.save(update_fields=[
+            'store_name',
+            'store_email',
+            'store_phone',
+            'store_domain',
+            'store_document'
+        ])  
+        # Retorna um dicionário com as informações da loja
+        return store_info
+
+    except Exception as e:
+        raise NuvemshopAPIError(f"Erro ao obter informações da loja: {str(e)}")
+
 def handle_nuvemshop_webhook(request: HttpRequest, integration: NuvemshopIntegration) -> HttpResponse:
     """
     Processa um webhook validado da Nuvemshop.
     """
+    print(f"Recebendo webhook da Nuvemshop: {request.body}")
     try:
         event_type = request.headers.get('x-nuvemshop-event', 'unknown')
         payload = json.loads(request.body)

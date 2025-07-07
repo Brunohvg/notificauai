@@ -44,30 +44,20 @@
                         </div>
                         <div class="col-md-6 mb-2">
                           <div class="small text-muted">CNPJ/CPF</div>
-                          <div>{{ integration.config_data.store_document }}</div>
+                          <div>{{ integration.nuvemshopintegration.store_document }}</div>
                         </div>
                         <div class="col-md-6 mb-2">
                           <div class="small text-muted">Telefone</div>
-                          <div>{{ integration.config_data.whatsapp_phone_number }}</div>
+                          <div>{{ integration.nuvemshopintegration.store_phone }}</div>
                         </div>
                         <div class="col-md-6 mb-2">
                           <div class="small text-muted">Email de contato</div>
-                          <div>{{ integration.config_data.email  }}</div>
+                          <div>{{ integration.nuvemshopintegration.store_email }}</div>
                         </div>
                         <div class="col-12">
                           <div class="small text-muted">Domínio</div>
-                          <div>{{ integration.config_data.original_domain }}</div>
+                          <div>{{ integration.nuvemshopintegration.store_domain }}</div>
                         </div>
-                        {% if integration.config_data.domains %}
-                          <div class="col-12 mt-2">
-                            <div class="small text-muted">Domínios vinculados</div>
-                            <ul class="mb-0 ps-3 small">
-                              {% for domain in integration.config_data.domains %}
-                                <li>{{ domain }}</li>
-                              {% endfor %}
-                            </ul>
-                          </div>
-                        {% endif %}
                       </div>
                     </div>
                     
