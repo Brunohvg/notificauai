@@ -78,7 +78,7 @@ def create_nuvemshop_webhook(integration: NuvemshopIntegration, event_type: str)
     """
 
     client = NuvemshopClient(
-        store_id=integration.store_id,
+        store_id= int(integration.store_id),
         access_token=integration.access_token
     )
     webhook_url = f"{settings.BASE_URL}/api/v1/integrations/nuvemshop/webhook/{integration.webhook_secret}/"
@@ -129,7 +129,7 @@ def get_store_info(integration: NuvemshopIntegration) -> dict:
     )
     
     try:
-        store_info = client.stores.list()
+        store_info = client.stores.get()
         if not store_info:
             raise NuvemshopAPIError("Não foi possível obter informações da loja.")  
         # A Nuvemshop retorna uma lista, mas queremos o primeiro item

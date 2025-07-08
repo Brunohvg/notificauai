@@ -11,7 +11,7 @@ class NuvemshopIntegration(Integration):
     # para o modelo 'Integration' pai.
     #Garante que uma loja não pode ser integrada duas vezes
 
-    store_id = models.CharField(max_length=100, unique=True, verbose_name='ID da Loja Nuvemshop')
+    store_id = models.IntegerField(max_length=100, unique=True, verbose_name='ID da Loja Nuvemshop')
     access_token = models.CharField(max_length=255, verbose_name='Token de Acesso')
     
     # Adicionamos o nosso token secreto para validar webhooks
