@@ -153,29 +153,31 @@ def get_store_info(integration: NuvemshopIntegration) -> dict:
         raise NuvemshopAPIError(f"Erro ao obter informações da loja: {str(e)}")
 
 
-def handle_nuvemshop_webhook(request: HttpRequest, integration: NuvemshopIntegration) -> HttpResponse:
-    """
-    Processa um webhook validado da Nuvemshop.
-    """
-
+def handle_nuvemshop_webhook(request: HttpRequest, integration: Integration) -> HttpResponse:
     try:
-        
         payload = json.loads(request.body)
         event_type = payload.get('event', 'unknown')
-        integration = integration
+
         evento = WebhookEvent.objects.create(
             workspace=integration.workspace,
-            source=Integration.Type.NUVEMSHOP, # Usando o enum do modelo pai
+            source=Integration.Type.NUVEMSHOP,
             event_type=event_type,
             payload=payload,
         )
-        # Processa o evento de criação de pedido
-        create_order_from_webhook(webhook_event=evento, integration=integration)
-        return create_response(success=True, message='Webhook processado com sucesso')
+
+        # Tenta processar se for evento suportado
+        try:
+            create_order_from_webhook(webhook_event=evento, integration=integration)
+        except NotImplementedError as e:
+            # Evento reconhecido mas não tratado (ex: sem parser) — OK ignorar
+            print(f"Ignorando evento: {e}")
+        except Exception as e:
+            # Outros erros de lógica — registra, mas não quebra o fluxo
+            print(f"Erro ao processar webhook: {e}")
+
+        return create_response(success=True, message="Webhook recebido e tratado (ou ignorado) com sucesso")
+
     except json.JSONDecodeError:
         return create_response(success=False, message='Payload JSON inválido', status_code=400)
-    except Exception as e:
-        return create_response(success=False, message=f'Erro interno no servidor', status_code=500)
-    
-
-
+    except Exception:
+        return create_response(success=False, message='Erro interno no servidor', status_code=500)
