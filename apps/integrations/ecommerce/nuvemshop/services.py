@@ -7,10 +7,11 @@ from django.utils import timezone
 from common.utils.responses import create_response
 from apps.integrations.models import WebhookEvent, Integration
 from .models import NuvemshopIntegration
-from .auth import exchange_code_for_token
+#from .get_token import exchange_code_for_token
 from .exceptions import NuvemshopAPIError
 from nuvemshop_client import NuvemshopClient 
 from django.conf import settings
+from apps.orders.services.order_service import create_order_from_webhook
 
 def finalize_nuvemshop_integration(code: str, workspace) -> NuvemshopIntegration:
     """
@@ -151,22 +152,25 @@ def get_store_info(integration: NuvemshopIntegration) -> dict:
     except Exception as e:
         raise NuvemshopAPIError(f"Erro ao obter informações da loja: {str(e)}")
 
+
 def handle_nuvemshop_webhook(request: HttpRequest, integration: NuvemshopIntegration) -> HttpResponse:
     """
     Processa um webhook validado da Nuvemshop.
     """
-    print(f"Recebendo webhook da Nuvemshop: {request.body}")
-    try:
-        event_type = request.headers.get('x-nuvemshop-event', 'unknown')
-        payload = json.loads(request.body)
 
-        # Agora o import funciona, pois o modelo existe no lugar certo
-        WebhookEvent.objects.create(
+    try:
+        
+        payload = json.loads(request.body)
+        event_type = payload.get('event', 'unknown')
+        integration = integration
+        evento = WebhookEvent.objects.create(
             workspace=integration.workspace,
             source=Integration.Type.NUVEMSHOP, # Usando o enum do modelo pai
             event_type=event_type,
             payload=payload,
         )
+        # Processa o evento de criação de pedido
+        create_order_from_webhook(webhook_event=evento, integration=integration)
         return create_response(success=True, message='Webhook processado com sucesso')
     except json.JSONDecodeError:
         return create_response(success=False, message='Payload JSON inválido', status_code=400)

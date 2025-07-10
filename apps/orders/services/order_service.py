@@ -10,17 +10,23 @@ PARSER_MAPPING = {
 }
 
 @transaction.atomic
-def create_order_from_webhook(webhook_event):
+def create_order_from_webhook(webhook_event, integration):
     """
     Orquestra a criação de um pedido a partir de um evento de webhook.
     """
+    acess_token = integration.access_token
+    store_id = integration.store_id
     source = webhook_event.source
     payload = webhook_event.payload
     
+    print(acess_token, store_id, source, payload)
     # 1. Seleciona o parser correto com base na fonte do evento
     parser_class = PARSER_MAPPING.get(source)
     if not parser_class:
         raise NotImplementedError(f"Nenhum parser implementado para a fonte: {source}")
+
+
+
 
     # 2. Usa o parser para traduzir os dados
     parser = parser_class(payload)
