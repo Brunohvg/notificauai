@@ -76,20 +76,32 @@ class Order(BaseModel):
         CANCELLED = 'cancelled', 'Cancelado'
         REFUNDED = 'refunded', 'Reembolsado'
 
+    # Relacionamentos
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name='orders')
     shipping_address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name='shipping_orders')
-    
+
+    # Identificação do pedido
     external_id = models.CharField(max_length=100, db_index=True)
     number = models.PositiveIntegerField(verbose_name='Número do Pedido', null=True, blank=True)
     source = models.CharField(max_length=50)
-    
+
+    # Status e acompanhamento
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING_PAYMENT, db_index=True)
-    
+    shipping_status = models.CharField(max_length=30, blank=True, null=True, verbose_name='Status de Envio')
+
+    # Valores
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor Total')
+
+    # Envio
     shipping_carrier = models.CharField(max_length=100, blank=True, verbose_name='Transportadora')
-    tracking_code = models.CharField(max_length=100, blank=True, verbose_name='Código de Rastreio', null=True) 
-    
+    tracking_code = models.CharField(max_length=100, blank=True, null=True, verbose_name='Código de Rastreio')
+
+    # Datas
     order_created_at = models.DateTimeField(verbose_name='Criado em (Origem)')
+    paid_at = models.DateTimeField(null=True, blank=True, verbose_name='Pago em')
+    closed_at = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em (Origem)')
+
+    # Técnicos / Logs
     raw_payload = models.JSONField(blank=True, null=True, help_text="O payload original do webhook para auditoria.")
 
     class Meta:
@@ -101,6 +113,7 @@ class Order(BaseModel):
     def __str__(self):
         num = self.number if self.number else self.external_id
         return f"Pedido #{num} ({self.get_status_display()})"
+
 
 # -----------------------------------------------------------------------------
 # Modelo Item do Pedido

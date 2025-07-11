@@ -10,12 +10,30 @@ class NuvemshopParser(BaseParser):
     """
 
     def _get_status(self) -> str:
-        """Determina o status correto do nosso sistema com base na hierarquia."""
-        if self.payload.get('shipping_status') == 'delivered': return Order.Status.DELIVERED
-        if self.payload.get('shipping_status') == 'shipped': return Order.Status.SHIPPED
-        if self.payload.get('payment_status') == 'paid': return Order.Status.PROCESSING
-        if self.payload.get('status') == 'cancelled': return Order.Status.CANCELLED
+        """Determina o status correto do nosso sistema com base na hierarquia da Nuvemshop."""
+
+        if self.payload.get('shipping_status') == 'delivered':
+            return Order.Status.DELIVERED
+
+        if self.payload.get('shipping_status') == 'shipped':
+            return Order.Status.SHIPPED
+
+        if self.payload.get('payment_status') == 'paid':
+            if self.payload.get('next_action') == 'waiting_shipment':
+                return Order.Status.PACKED
+            return Order.Status.PROCESSING
+
+        if self.payload.get('status') == 'cancelled':
+            return Order.Status.CANCELLED
+
+        if self.payload.get('status') == 'refunded':
+            return Order.Status.REFUNDED
+
+        if self.payload.get('status') == 'pending_payment':
+            return Order.Status.PENDING_PAYMENT
+
         return Order.Status.PENDING_PAYMENT
+
 
     def _safe_get(self, data, key, default=''):
         """Função auxiliar para obter valores de forma segura."""
@@ -65,6 +83,10 @@ class NuvemshopParser(BaseParser):
             'status': self._get_status(),
             'shipping_carrier': self._safe_get(self.payload, 'shipping_option', ''),
             'tracking_code': self._safe_get(self.payload, 'shipping_tracking_number', ''),
+
+            'paid_at': self._safe_get(self.payload, 'paid_at'),  # novo
+            'closed_at': self._safe_get(self.payload, 'closed_at'),  # novo
+            'shipping_status': self._safe_get(self.payload, 'shipping_status'),  # novo
         }
         
         items_data = [
