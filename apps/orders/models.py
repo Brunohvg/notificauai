@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 
 from django.db import models
-from core.model import BaseModel # Ou o caminho correto para o seu BaseModel
+from core.models import BaseModel # Ou o caminho correto para o seu BaseModel
 
 # -----------------------------------------------------------------------------
 # Modelo Cliente (Com todos os seus campos de CRM/Marketing)

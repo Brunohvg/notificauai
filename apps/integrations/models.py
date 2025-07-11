@@ -1,7 +1,7 @@
 # Em apps/integrations/models.py
 
 from django.db import models
-from core.model import BaseModel # Ou de onde você importa seu BaseModel
+from core.models import BaseModel # Ou de onde você importa seu BaseModel
 from apps.workspaces.models import Workspace
 
 # --- Modelo Base de Integração (já estava correto) ---
