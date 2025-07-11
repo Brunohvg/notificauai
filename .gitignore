@@ -15,3 +15,6 @@ django-debug.log
 logs/django-debug.log
 logs/django-debug.log
 apps/integrations/ecommerce/nuvemshop/tests/teste.py
+pedido_caiu.txt
+pedido_marcado_embalado.txt
+pedido_marcado_enviado.txt

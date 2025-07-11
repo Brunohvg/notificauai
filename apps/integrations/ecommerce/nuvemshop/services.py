@@ -84,8 +84,21 @@ def create_nuvemshop_webhook(integration: NuvemshopIntegration, event_type: str)
     )
     webhook_url = f"{settings.BASE_URL}/api/v1/integrations/nuvemshop/webhook/{integration.webhook_secret}/"
 
-    #webhook_url = f"{settings.BASE_URL}/apps/integrations/ecommerce/nuvemshop/webhooks/?token={integration.webhook_secret}"
-    event_type = "product/created"
+    # webhook_url = f"{settings.BASE_URL}/apps/integrations/ecommerce/nuvemshop/webhooks/?token={integration.webhook_secret}"
+
+    event_types = [
+        "order/created",
+        "order/updated",
+        "order/paid",
+        "order/packed",
+        "order/fulfilled",
+        "order/cancelled",
+        "order/custom_fields_updated",
+        "order/edited",
+        "order/pending",
+        "order/voided"
+    ]
+
     try:
         # Evita duplicar webhooks: verifica se já foi criado
         if integration.webhook_url == webhook_url and integration.webhook_active:
@@ -95,12 +108,30 @@ def create_nuvemshop_webhook(integration: NuvemshopIntegration, event_type: str)
                 "webhook_id": integration.webhook_id,
             }
 
-        webhook_data = {
-            "event": event_type,
-            "url": webhook_url
+        created_webhooks = []
+
+        for event in event_types:
+            webhook_data = {
+                "event": event,
+                "url": webhook_url
+            }
+
+            response = client.webhooks.create(data=webhook_data)
+            created_webhooks.append({
+                "event": event,
+                "webhook_id": response.get("id"),
+                "status": "criado"
+            })
+
+        return {
+            "message": "Webhooks criados com sucesso.",
+            "webhooks": created_webhooks
         }
 
-        response = client.webhooks.create(data=webhook_data)
+    except Exception as e:
+        print("Erro ao criar webhooks:", str(e))
+        raise
+
 
         # Salva os dados do webhook criado
         integration.webhook_url = webhook_url
@@ -181,3 +212,4 @@ def handle_nuvemshop_webhook(request: HttpRequest, integration: Integration) -> 
         return create_response(success=False, message='Payload JSON inválido', status_code=400)
     except Exception:
         return create_response(success=False, message='Erro interno no servidor', status_code=500)
+
