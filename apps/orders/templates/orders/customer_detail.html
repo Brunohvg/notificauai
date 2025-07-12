@@ -1,0 +1,122 @@
+{% extends 'base/dash/base.html' %}
+{% load order_helpers %}
+
+{% block header_title %}{{ header_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card bg-light-info shadow-none position-relative overflow-hidden mb-4">
+        <div class="card-body px-4 py-3">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <h4 class="fw-semibold mb-8">{{ customer.name }}</h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a class="text-muted" href="{% url 'orders:customer_list' %}">Clientes</a></li>
+                            <li class="breadcrumb-item" aria-current="page">Perfil do Cliente</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3"><i class="ti ti-shopping-cart-plus fs-8 text-primary"></i></div>
+                    <div>
+                        <h5 class="card-title mb-1">Total de Pedidos</h5>
+                        <p class="card-text text-dark fw-bold fs-7 mb-0">{{ order_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3"><i class="ti ti-receipt-2 fs-8 text-success"></i></div>
+                    <div>
+                        <h5 class="card-title mb-1">Total Gasto</h5>
+                        <p class="card-text text-dark fw-bold fs-7 mb-0">R$ {{ customer.total_spent|floatformat:2 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3"><i class="ti ti-chart-pie-2 fs-8 text-warning"></i></div>
+                    <div>
+                        <h5 class="card-title mb-1">Ticket Médio</h5>
+                        <p class="card-text text-dark fw-bold fs-7 mb-0">R$ {{ ticket_medio|floatformat:2 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Informações de Contato</h5>
+                    <p class="mb-2"><strong>Email:</strong> {{ customer.email }}</p>
+                    <p class="mb-2"><strong>Telefone:</strong> {{ customer.phone|default:"Não informado" }}</p>
+                    <p class="mb-0"><strong>Documento:</strong> {{ customer.identification|default:"Não informado" }}</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Endereço Principal</h5>
+                    {% with main_address=customer.addresses.first %}
+                        {% if main_address %}
+                            <p class="mb-1">{{ main_address.street }}, {{ main_address.number }}</p>
+                            <p class="mb-1">{{ main_address.locality|default:'' }} - {{ main_address.city }}/{{ main_address.province }}</p>
+                            <p class="mb-0">CEP: {{ main_address.zipcode }}</p>
+                        {% else %}
+                            <p>Nenhum endereço cadastrado.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title fw-semibold mb-0">Pedidos Recentes</h5>
+                        <a href="{% url 'orders:customer_order_list' customer.id %}" class="btn btn-light-primary text-primary btn-sm">Ver Todos os Pedidos</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table search-table align-middle">
+                            <thead class="header-item">
+                                <tr>
+                                    <th>Nº Pedido</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td><a href="{% url 'orders:order_detail' order.id %}">#{{ order.number|default:order.external_id }}</a></td>
+                                    <td>{{ order.order_created_at|date:"d/m/Y" }}</td>
+                                    <td><span class="badge {{ order.status|status_to_badge }}">{{ order.get_status_display }}</span></td>
+                                    <td class="text-end fw-bold">R$ {{ order.total_amount|floatformat:2 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center">Nenhum pedido recente.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,8 @@
 {% block content %}
 <div class="container-fluid">
 <div class="card card-body mb-3">
-    <form method="GET" action="{% url 'orders:order_list' %}">
+    <form method="GET" action="{% if customer %}{% url 'orders:customer_order_list' customer.id %}{% else %}{% url 'orders:order_list' %}{% endif %}">
+
         
         {% comment %}
         Usamos um grid (row) para alinhar todos os campos de filtro em uma única linha.
@@ -44,7 +45,8 @@
 
             <div class="col-md-2 d-flex">
                 <button class="btn btn-primary btn-sm w-100 me-2" type="submit">Filtrar</button>
-                <a href="{% url 'orders:order_list' %}" class="btn btn-light btn-sm w-100">Limpar</a>
+               <a href="{% if customer %}{% url 'orders:customer_order_list' customer.id %}{% else %}{% url 'orders:order_list' %}{% endif %}" class="btn btn-light btn-sm w-100">Limpar</a>
+
             </div>
         </div>
     </form>

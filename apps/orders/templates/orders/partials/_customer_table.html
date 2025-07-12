@@ -1,0 +1,60 @@
+{% comment %} ARQUIVO: templates/orders/partials/_customer_table.html {% endcomment %}
+
+<div class="card card-body">
+    <div class="table-responsive">
+        <table class="table search-table align-middle text-nowrap">
+            <thead class="header-item">
+                <tr>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th class="text-center">Total de Pedidos</th>
+                    <th class="text-end">Valor Gasto</th>
+                    <th>Origem</th>
+                    <th>Cliente Desde</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h6 class="user-name mb-0">{{ customer.name }}</h6>
+                                <span class="user-work fs-3">{{ customer.email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="d-block">{{ customer.phone|default:"Não informado" }}</span>
+                        <span class="user-work fs-3">{{ customer.identification|default:"" }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-light-primary text-primary fw-bold fs-3">
+                            {{ customer.order_count }}
+                        </span>
+                    </td>
+                    <td class="text-end fw-bold">
+                        R$ {{ customer.total_spent|floatformat:2 }}
+                    </td>
+                    <td>
+                        <span class="user-work">{{ customer.source }}</span>
+                    </td>
+                    <td>
+                        <span class="user-work">{{ customer.created_at|date:"d/m/Y" }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'orders:customer_detail' customer.id %}" class="btn btn-sm btn-primary">Ver Perfil</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <p>Nenhum cliente encontrado.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
