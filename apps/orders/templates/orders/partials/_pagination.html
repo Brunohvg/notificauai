@@ -1,0 +1,45 @@
+{% comment %}
+ARQUIVO: templates/orders/partials/_pagination.html
+Componente reutilizável para renderizar os controles de paginação.
+{% endcomment %}
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="Navegação das páginas" class="mt-4 d-flex justify-content-center">
+    <ul class="pagination">
+
+        {% comment %} Botão 'Anterior' {% endcomment %}
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Anterior</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Anterior</span>
+            </li>
+        {% endif %}
+
+        {% comment %} Números das Páginas (com "...") {% endcomment %}
+        {% for page_num in paginator.get_elided_page_range %}
+            {% if page_num == paginator.ELLIPSIS %}
+                <li class="page-item disabled"><span class="page-link">{{ page_num }}</span></li>
+            {% else %}
+                <li class="page-item {% if page_num == page_obj.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page_num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ page_num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% comment %} Botão 'Próxima' {% endcomment %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Próxima</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Próxima</span>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}

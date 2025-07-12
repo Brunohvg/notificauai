@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib import messages
 from apps.orders.models import Order, Customer
 from django.utils.timezone import make_aware # <<< IMPORTE a função make_aware
-
+from django.core.paginator import Paginator # <<< IMPORTE O PAGINATOR
 from django.shortcuts import render
 from django.db.models import Q # Importe o Q object
 from django.db.models import Count
@@ -47,8 +47,16 @@ def order_list(request):
     if data_fim:
         dt_fim_completo = make_aware(datetime.combine(datetime.strptime(data_fim, '%Y-%m-%d'), time.max))
         queryset = queryset.filter(order_created_at__lte=dt_fim_completo)
+
+    # Adicione a paginação antes do context
+    paginator = Paginator(queryset, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
         
     context = {
+        'page_obj': page_obj,
+        'orders': page_obj, # Mantém 'orders' para compatibilidade
+        'paginator': paginator,
         'orders': queryset,
         'header_title': 'Meus Pedidos',
         'status_choices': status_choices, # NOVO: Passa a lista de status para o template
@@ -132,8 +140,15 @@ def customer_list(request):
         # Padrão: ordena pelos clientes criados mais recentemente
         customers_queryset = customers_queryset.order_by('-created_at')
 
+    # --- LÓGICA DE PAGINAÇÃO ---
+    paginator = Paginator(customers_queryset, 10) # Mostra 25 clientes por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'customers': customers_queryset,
+        'page_obj': page_obj, # Passamos o objeto da página, não mais a queryset inteira
+        'customers': page_obj, # Mantemos 'customers' para compatibilidade com a tabela
+        'paginator': paginator, # Passamos o paginator para o template de paginação
         'header_title': 'Clientes',
     }
     return render(request, 'orders/customer_list.html', context)
@@ -170,7 +185,15 @@ def customer_order_list(request, customer_id):
         dt_fim_completo = make_aware(datetime.combine(datetime.strptime(data_fim, '%Y-%m-%d'), time.max))
         queryset = queryset.filter(order_created_at__lte=dt_fim_completo)
 
+    # Adicione a paginação antes do context
+    paginator = Paginator(queryset, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        'page_obj': page_obj,
+        'orders': page_obj, # Mantém 'orders' para compatibilidade
+        'paginator': paginator,
         'orders': queryset,
         'customer': customer, # Passa o cliente para o template
         'header_title': f'Pedidos de {customer.name}', # Título dinâmico
