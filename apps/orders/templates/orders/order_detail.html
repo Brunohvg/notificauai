@@ -1,0 +1,118 @@
+{% extends 'base/dash/base.html' %}
+{% comment %}
+ARQUIVO: templates/orders/order_detail.html
+OBJETIVO: Mostrar todos os detalhes de um único pedido.
+Renderizado pela view 'order_detail'.
+{% endcomment %}
+
+{% load order_helpers %}
+
+{% block header_title %}{{ header_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card bg-light-info shadow-none position-relative overflow-hidden mb-4">
+        <div class="card-body px-4 py-3">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <h4 class="fw-semibold mb-8">Pedido #{{ order.number|default:order.external_id }}</h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a class="text-muted" href="{% url 'orders:order_list' %}">Pedidos</a></li>
+                            <li class="breadcrumb-item" aria-current="page">Detalhes</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-3">
+                    <div class="text-center mb-n5">
+                        <img src="https://demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/dist/images/breadcrumb/ChatBc.png" class="img-fluid" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Itens do Pedido</h5>
+                    <div class="table-responsive">
+                        <table class="table align-middle search-table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Produto</th>
+                                    <th class="text-center">Quanti</th>
+                                    <th class="text-end">Preço Uni</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product_name }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">R$ {{ item.price|floatformat:2 }}</td>
+                                    <td class="text-end">R$ {{ item.price|multiply:item.quantity|floatformat:2 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Este pedido não possui itens.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Informações de Envio</h5>
+                    {% if order.shipping_address %}
+                        <p><strong>Endereço:</strong> {{ order.shipping_address.street }}, {{ order.shipping_address.number|default:'' }} - {{ order.shipping_address.city }}/{{ order.shipping_address.province }} - CEP: {{ order.shipping_address.zipcode }}</p>
+                        <p><strong>Transportadora:</strong> {{ order.shipping_carrier|default:"Não informado" }}</p>
+                        <p><strong>Código de Rastreio:</strong> {{ order.tracking_code|default:"Não informado" }}</p>
+                    {% else %}
+                        <p>Nenhum endereço de entrega associado a este pedido.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Resumo do Pedido</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            Status
+                            <span class="badge {{ order.status|status_to_badge }}">{{ order.get_status_display }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            Data do Pedido
+                            <span>{{ order.order_created_at|date:"d/m/Y" }}</span>
+                        </li>
+                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            Data do Pagamento
+                            <span>{{ order.paid_at|date:"d/m/Y"|default:"--" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold px-0">
+                            Valor Total
+                            <span>R$ {{ order.total_amount|floatformat:2 }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-4">Cliente</h5>
+                    <p class="mb-1"><strong>Nome:</strong> {{ order.customer.name }}</p>
+                    <p class="mb-1"><strong>Email:</strong> {{ order.customer.email }}</p>
+                    <p class="mb-0"><strong>Telefone:</strong> {{ order.customer.phone|default:"Não informado" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

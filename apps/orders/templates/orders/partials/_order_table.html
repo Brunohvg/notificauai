@@ -1,0 +1,66 @@
+{% comment %}
+ARQUIVO: templates/orders/partials/_order_table.html
+OBJETIVO: Renderizar APENAS a tabela com a lista de pedidos.
+É um arquivo parcial incluído pelo 'base_orders.html'.
+{% endcomment %}
+
+{% load order_helpers %}
+
+<div class="card card-body">
+    <div class="table-responsive">
+        <table class="table search-table align-middle text-nowrap">
+            <thead class="header-item">
+                <tr>
+
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Status</th>
+                    <th class="text-end">Valor Total</th>
+                    <th>Data do Pedido</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="search-items">
+   
+                    <td>
+                        <a href="{% url 'orders:order_detail' order.id %}" class="fw-bold text-dark">#{{ order.number|default:order.external_id }}</a>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                                <h6 class="user-name mb-0">{{ order.customer.name }}</h6>
+                                <span class="user-work fs-3">{{ order.customer.email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge {{ order.status|status_to_badge }}">{{ order.get_status_display }}</span>
+                    </td>
+                    <td class="text-end">
+                        <span class="fw-bold">R$ {{ order.total_amount|floatformat:2 }}</span>
+                    </td>
+                    <td>
+                        <span class="order-date">{{ order.order_created_at|date:"d/m/Y H:i" }}</span>
+                    </td>
+                    <td>
+                        <div class="action-btn">
+                            <a href="{% url 'orders:order_detail' order.id %}" class="text-primary view-btn" title="Ver Detalhes">
+                                <i class="ti ti-eye fs-5"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <p>Nenhum pedido encontrado.</p>
+                        <a href="{% url 'orders:sync_orders' %}" class="btn btn-primary">Sincronizar Agora</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

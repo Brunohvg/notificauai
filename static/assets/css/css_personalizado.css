@@ -134,3 +134,62 @@ textarea.form-control:focus {
 .scroll-sidebar {
     height: 100vh;
 }
+
+
+/* =================================================================
+   AJUSTES DE FONTE PARA TABELAS (VERSÃO COM !IMPORTANT)
+   ================================================================= */
+
+/* 1. Usamos !important para garantir que nosso tamanho de fonte
+      sobrescreva qualquer regra do tema.
+*/
+.search-table th,
+.search-table td {
+    font-size: 0.875rem !important; 
+    vertical-align: middle !important;
+}
+
+/* 2. Forçamos a redução no nome do cliente.
+*/
+.search-table .user-name {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 2px !important;
+}
+
+/* 3. Forçamos a redução no e-mail.
+*/
+.search-table .user-work {
+    font-size: 0.75rem !important;
+    color: #5a6a85 !important;
+}
+
+/* 4. Forçamos as regras para evitar a quebra de linha.
+*/
+.search-table .user-name,
+.search-table .user-work {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 250px !important; /* Ajuste este valor se o nome ainda estiver quebrando */
+    display: block !important;
+}
+
+/* =================================================================
+   ESTILOS PARA A NOVA BARRA DE FILTROS MINIMALISTA
+   ================================================================= */
+
+/* Reduz o tamanho da fonte dos rótulos (labels) dos filtros */
+.form-label.small {
+    font-size: 0.75rem; /* 12px */
+    margin-bottom: 0.25rem;
+    color: #5a6a85;
+}
+
+/* Garante que os campos de formulário e botões na barra de filtro 
+   tenham a mesma altura para um alinhamento perfeito. */
+.align-items-end .form-control,
+.align-items-end .form-select,
+.align-items-end .btn {
+    height: calc(1.5em + 0.5rem + 2px); /* Altura padrão de form-control-sm */
+}
