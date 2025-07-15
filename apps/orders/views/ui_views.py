@@ -9,6 +9,12 @@ from django.shortcuts import render
 from django.db.models import Q # Importe o Q object
 from django.db.models import Count
 from datetime import datetime, time
+from apps.integrations.ecommerce.nuvemshop.models import NuvemshopIntegration
+from nuvemshop_client import NuvemshopClient
+from apps.orders.services.order_service import sync_nuvemshop_orders  # você cria isso
+
+
+from apps.integrations.ecommerce.nuvemshop.utils.token import get_nuvemshop_credentials
 
 def order_list(request):
     """
@@ -49,7 +55,7 @@ def order_list(request):
         queryset = queryset.filter(order_created_at__lte=dt_fim_completo)
 
     # Adicione a paginação antes do context
-    paginator = Paginator(queryset, 25)
+    paginator = Paginator(queryset, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
         
@@ -85,16 +91,43 @@ def order_detail(request, order_id):
     return render(request, 'orders/order_detail.html', context)
 
 
+
 def sync_orders_view(request):
-    """
-    View de exemplo para o botão de sincronização.
-    Aqui você colocaria a lógica para chamar a API e atualizar os pedidos.
-    """
-    # Exemplo: messages.success(request, "Sincronização iniciada com sucesso!")
-    print("Lógica de sincronização de pedidos seria executada aqui.")
-    
-    # Redireciona de volta para a lista de pedidos
-    return HttpResponseRedirect(reverse('orders:order_list'))
+    """Sincroniza pedidos da Nuvemshop com base no workspace da requisição."""
+
+    def redirect_with_msg(level, msg):
+        messages.add_message(request, level, msg)
+        return HttpResponseRedirect(reverse('orders:order_list'))
+
+    if not getattr(request, 'workspace', None):
+        return redirect_with_msg(messages.ERROR, 'Workspace não encontrada.')
+
+    try:
+        credentials = get_nuvemshop_credentials(request.workspace)
+    except ValueError as e:
+        return redirect_with_msg(messages.ERROR, str(e))
+
+    store_id = credentials.get('store_id')
+    access_token = credentials.get('access_token')
+
+    if not store_id or not access_token:
+        return redirect_with_msg(messages.ERROR, 'Credenciais Nuvemshop inválidas ou ausentes.')
+
+    try:
+        client = NuvemshopClient(store_id=store_id, access_token=access_token)
+        orders = client.orders.list(filters={'payment_status': 'cancelled'})  # Filtra apenas pedidos pagos
+
+        if not orders:
+            return redirect_with_msg(messages.INFO, 'Nenhum pedido encontrado para sincronização.')
+
+        # Serviço separado para salvar/processar pedidos
+        sync_nuvemshop_orders(orders, workspace=request.workspace)
+
+        return redirect_with_msg(messages.SUCCESS, f'{len(orders)} pedidos sincronizados com sucesso!')
+
+    except Exception as e:
+        return redirect_with_msg(messages.ERROR, f'Erro ao sincronizar pedidos: {e}')
+
 
 
 def customer_list(request):

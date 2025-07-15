@@ -91,6 +91,8 @@ class Order(BaseModel):
 
     # Valores
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor Total')
+    payment_details = models.JSONField(blank=True, null=True, verbose_name='Detalhes do Pagamento', help_text="Informações adicionais sobre o pagamento, como método e status.")
+
 
     # Envio
     shipping_carrier = models.CharField(max_length=100, blank=True, verbose_name='Transportadora')
@@ -101,6 +103,10 @@ class Order(BaseModel):
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name='Pago em')
     closed_at = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em (Origem)')
 
+    # Cancelamento
+    cancel_reason = models.CharField(max_length=255, blank=True, null=True, verbose_name='Motivo do Cancelamento') 
+    cancelled_at = models.DateTimeField(null=True, blank=True, verbose_name='Cancelado em')
+    
     # Técnicos / Logs
     raw_payload = models.JSONField(blank=True, null=True, help_text="O payload original do webhook para auditoria.")
 

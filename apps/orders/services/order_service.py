@@ -41,6 +41,15 @@ def create_order_from_webhook(webhook_event, integration):
         # Supondo que o seu cliente tenha um método .get() para pedidos
         order_full_data = client.orders.get(external_order_id)
 
+        #print(f"Dados do pedido #{order_full_data} obtidos com sucesso.")
+        
+        print(f"Dados do pedido: {order_full_data.get('id')} - {order_full_data.get('customer', {}).get('email')}")
+        print(f"Status do pedido: {order_full_data.get('status')}")
+        print(f"status de pagamento: {order_full_data.get('payment_status')}")
+        print(f"Total do pedido: {order_full_data.get('total')}")
+        print(order_full_data)
+        
+
     except NuvemshopClientError as e:
         # Se a busca na API falhar, levanta um erro para ser tratado
         raise ValueError(f"Falha ao buscar os dados do pedido #{external_order_id} na API: {e}")
@@ -92,3 +101,11 @@ def create_order_from_webhook(webhook_event, integration):
         OrderItem.objects.bulk_create(order_items)
 
     return order_obj
+
+
+
+def sync_nuvemshop_orders(order_list, workspace):
+    for order in order_list:
+        print(f"Processando pedido: {order.get('id')}")
+        # lógica para salvar/atualizar pedidos no banco
+        pass

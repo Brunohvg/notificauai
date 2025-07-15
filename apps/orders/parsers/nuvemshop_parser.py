@@ -10,28 +10,38 @@ class NuvemshopParser(BaseParser):
     """
 
     def _get_status(self) -> str:
-        """Determina o status correto do nosso sistema com base na hierarquia da Nuvemshop."""
+        status = self.payload.get('status')
+        shipping_status = self.payload.get('shipping_status')
+        payment_status = self.payload.get('payment_status')
+        next_action = self.payload.get('next_action')
 
-        if self.payload.get('shipping_status') == 'delivered':
+        # 1. Cancelado tem prioridade máxima
+        if status == 'cancelled':
+            return Order.Status.CANCELLED
+
+        # 2. Reembolsado também tem prioridade alta
+        if status == 'refunded':
+            return Order.Status.REFUNDED
+
+        # 3. Pedido entregue
+        if shipping_status == 'delivered':
             return Order.Status.DELIVERED
 
-        if self.payload.get('shipping_status') == 'shipped':
+        # 4. Pedido enviado
+        if shipping_status == 'shipped':
             return Order.Status.SHIPPED
 
-        if self.payload.get('payment_status') == 'paid':
-            if self.payload.get('next_action') == 'waiting_shipment':
+        # 5. Pedido pago e pronto para envio
+        if payment_status == 'paid':
+            if next_action == 'waiting_shipment':
                 return Order.Status.PACKED
             return Order.Status.PROCESSING
 
-        if self.payload.get('status') == 'cancelled':
-            return Order.Status.CANCELLED
-
-        if self.payload.get('status') == 'refunded':
-            return Order.Status.REFUNDED
-
-        if self.payload.get('status') == 'pending_payment':
+        # 6. Pagamento pendente
+        if status == 'pending_payment':
             return Order.Status.PENDING_PAYMENT
 
+        # 7. Caso padrão
         return Order.Status.PENDING_PAYMENT
 
 
@@ -53,14 +63,15 @@ class NuvemshopParser(BaseParser):
         """
         customer_payload = self._safe_get(self.payload, 'customer', {})
         shipping_payload = self._safe_get(self.payload, 'shipping_address', {})
-        
+        payment_details_payload = self._safe_get(self.payload, 'payment_details', {})
+
         customer_data = {
             'name': self._safe_get(customer_payload, 'name'),
             'email': self._safe_get(customer_payload, 'email'),
             'phone': self._safe_get(customer_payload, 'phone'),
             'identification': self._safe_get(customer_payload, 'identification'),
             'external_id': str(self._safe_get(customer_payload, 'id', '0')),
-            'accepts_marketing': self._safe_get(customer_payload, 'accepts_marketing', False),
+            'accepts_marketing': self._safe_get(customer_payload, 'accepts_marketing', 'False'),
             'total_spent': self._safe_decimal(self._safe_get(customer_payload, 'total_spent')),
             'last_order_external_id': str(self._safe_get(customer_payload, 'last_order_id', '')),
         }
@@ -87,6 +98,14 @@ class NuvemshopParser(BaseParser):
             'paid_at': self._safe_get(self.payload, 'paid_at'),  # novo
             'closed_at': self._safe_get(self.payload, 'closed_at'),  # novo
             'shipping_status': self._safe_get(self.payload, 'shipping_status'),  # novo
+            'cancel_reason': self._safe_get(self.payload, 'cancel_reason', ''),  # novo
+            'cancelled_at': self._safe_get(self.payload, 'cancelled_at'),  # novo
+            'payment_details': {
+                'method': self._safe_get(payment_details_payload, 'method', ''),
+                'credit_card_company': self._safe_get(payment_details_payload, 'credit_card_company', ''),
+                'installments': self._safe_get(payment_details_payload, 'installments', 0),
+                'gateway_name': self._safe_get(self.payload, 'gateway_name', ''),
+                } # novo
         }
         
         items_data = [
