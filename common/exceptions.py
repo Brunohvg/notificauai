@@ -5,8 +5,9 @@
 # -------------------------------
 
 class IntegrationError(Exception):
-    """Erro genérico relacionado a integrações."""
-    pass
+    def __init__(self, message=None):
+        self.message = message or "Erro genérico na integração com a Nuvemshop."
+        super().__init__(self.message)
 
 class WorkspaceNotFound(IntegrationError):
     """Workspace não encontrado."""
@@ -17,6 +18,7 @@ class IntegrationNotFound(IntegrationError):
     """Integração não encontrada no banco."""
     def __init__(self, message="Integração não encontrada"):
         super().__init__(message)
+
 
 class InvalidCredentials(IntegrationError):
     """Credenciais inválidas ou ausentes."""

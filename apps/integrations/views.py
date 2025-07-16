@@ -17,6 +17,9 @@ def integrations_view(request):
     }
     return render(request, 'integrations/integrations.html', context)
 
+
+
+
 def integrations_delete(request, integration_id):
     """
     Exclui uma integração específica do workspace ATIVO do usuário logado.
