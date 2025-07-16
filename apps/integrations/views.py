@@ -30,3 +30,6 @@ def integrations_delete(request, integration_id):
         return render(request, 'integrations/integrations.html', {'message': 'Integração excluída com sucesso.'})
     except Integration.DoesNotExist:
         return render(request, 'integrations/integrations.html', {'error': 'Integração não encontrada.'})
+    
+
+    
