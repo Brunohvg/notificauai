@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "django>=5.2.3",
+    "evolutionapi>=0.1.2",
     "nuvemshop-client-python==0.2.5",
     "pillow>=11.2.1",
     "psycopg2-binary>=2.9.10",
