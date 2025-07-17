@@ -13,7 +13,7 @@ from common.exceptions import IntegrationError
 from apps.integrations.messaging.whatsapp.models import WhatsappIntegration
 from evolutionapi.models.instance import InstanceConfig
 from apps.integrations.messaging.whatsapp.client._evolution_client import get_evolution_client
-from .services import check_existing_integration
+from .services import has_existing_integration, create_whatsapp_integration
 @csrf_exempt
 def whatsapp_webhook_receiver(request: HttpRequest, received_token: str) -> HttpResponse:
     """
@@ -34,10 +34,19 @@ def whatsapp_webhook_receiver(request: HttpRequest, received_token: str) -> Http
 def start_whatsapp_auth(request):
     if request.method != "POST":
         return create_response(success=False, message='Método não permitido', status_code=405)
-    
+
     phone = request.POST.get('phone')
-    print(check_existing_integration(phone=phone))
 
-    return redirect_with_message('integrations_ui:integrations', request, f"teste {phone}", level='success')
+    exists = has_existing_integration(phone)
+    if not exists:
+        create_whatsapp_integration(phone)
+        return redirect_with_message('integrations_ui:integrations', request, 'Integração sendo realizada', level='success')
 
+
+    return redirect_with_message(
+        'integrations_ui:integrations',
+        request,
+        f"teste - já existe integração? {exists}",
+        level='success'
+    )
 
