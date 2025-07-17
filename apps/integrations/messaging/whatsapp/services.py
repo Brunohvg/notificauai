@@ -2,8 +2,9 @@ from .models import WhatsappIntegration
 from common.utils.responses import create_response 
 from .client._evolution_client import get_evolution_client
 from evolutionapi.models.instance import InstanceConfig
+from .parsers import WhatsappParser
 import uuid
-
+from evolutionapi.models.instance import WebhookConfig
 
 def has_existing_integration(phone) -> bool:
     """
@@ -13,10 +14,16 @@ def has_existing_integration(phone) -> bool:
     return WhatsappIntegration.objects.filter(phone_number=phone).exists()
 
 
-def create_whatsapp_integration(phone):
+
+
+
+def create_whatsapp_integration(phone, workspace):
+    print(phone)
+    print(workspace)
+
     client = get_evolution_client()
     name = f"whatsapp_{uuid.uuid4().hex[:8]}"
-    # Configuração completa
+    
     config = InstanceConfig(
         instanceName=name,
         integration="WHATSAPP-BAILEYS",
@@ -30,7 +37,20 @@ def create_whatsapp_integration(phone):
         readStatus=True,
         syncFullHistory=True
     )
-    
+
     new_instance = client.instances.create_instance(config)
-    print(new_instance)
-    return new_instance
+
+    parser = WhatsappParser(payload=new_instance)
+    parsed_data = parser.parse()
+
+    print(parsed_data.get('access_token'))  # corrigido
+
+    instancia, created = WhatsappIntegration.objects.update_or_create(
+        phone_number=phone,
+        workspace=workspace,  # certifique que existe esse campo no model
+        defaults=parsed_data
+    )
+
+    return instancia
+
+

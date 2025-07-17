@@ -34,12 +34,12 @@ def whatsapp_webhook_receiver(request: HttpRequest, received_token: str) -> Http
 def start_whatsapp_auth(request):
     if request.method != "POST":
         return create_response(success=False, message='Método não permitido', status_code=405)
-
+    workspace = request.workspace
     phone = request.POST.get('phone')
 
     exists = has_existing_integration(phone)
     if not exists:
-        create_whatsapp_integration(phone)
+        create_whatsapp_integration(phone, workspace)
         return redirect_with_message('integrations_ui:integrations', request, 'Integração sendo realizada', level='success')
 
 
